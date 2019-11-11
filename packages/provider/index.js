@@ -56,7 +56,7 @@ module.exports = {
           "networks[networkName].networkCheckTimeout property to do this.";
         throw new Error(errorMessage);
       }, networkCheckTimeout);
-      web3.eth
+      interfaceAdapter
         .getBlockNumber()
         .then(() => {
           clearTimeout(noResponseFromNetworkCall);
