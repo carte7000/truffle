@@ -64,4 +64,8 @@ export class InterfaceAdapter {
   public getBalance(address: string): Promise<string> {
     return this.adapter.getBalance(address);
   }
+
+  public getBlockNumber(): Promise<number> {
+    return this.adapter.getBlockNumber();
+  }
 }
