@@ -33,4 +33,8 @@ export class Web3InterfaceAdapter {
   public getBalance(address: string) {
     return this.web3.eth.getBalance(address);
   }
+
+  public getBlockNumber() {
+    return this.web3.eth.getBlockNumber();
+  }
 }
