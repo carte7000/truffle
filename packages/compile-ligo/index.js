@@ -85,7 +85,7 @@ function checkLigo(callback) {
 
 // Execute ligo for single source file
 function execLigo(sourcePath, callback) {
-  const command = `docker run -v $PWD:$PWD --rm -i ligolang/ligo:next compile-contract ${sourcePath} main`;
+  const command = `docker run -v $PWD:$PWD --rm -i ligolang/ligo:next compile-contract --michelson-format=json ${sourcePath} main`;
 
   exec(command, { maxBuffer: 600 * 1024 }, (err, stdout, stderr) => {
     if (err)
@@ -96,8 +96,7 @@ function execLigo(sourcePath, callback) {
       );
 
     const output = stdout.trim();
-    const compiledContract = output.match(/{([^]*)}/)[1].trim();
-
+    const compiledContract = output;
     callback(null, compiledContract);
   });
 }

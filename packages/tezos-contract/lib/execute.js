@@ -154,7 +154,7 @@ var execute = {
 
       execute
         .prepareCall(constructor, arguments)
-        .then(async ({ args, params, network }) => {
+        .then(async ({ args, params }) => {
           const context = {
             contract: constructor, // Can't name this field `constructor` or `_constructor`
             promiEvent,
@@ -223,9 +223,7 @@ var execute = {
 
       execute
         .prepareCall(constructor, arguments)
-        .then(async ({ args, params, network }) => {
-          const { blockLimit } = network;
-
+        .then(async ({ args, params }) => {
           // Promievent and flag that allows instance to resolve (rather than just receipt)
           const context = {
             contract: constructor,
@@ -251,8 +249,8 @@ var execute = {
 
           const originateParams = {
             balance: params.value || "0",
-            code: params.data,
-            init: `${params.arguments}`, // TODO: robust encoding/decoding of deployer params from migration scripts
+            code: JSON.parse(params.data),
+            storage: params.arguments, // TODO: robust encoding/decoding of deployer params from migration scripts
             fee: params.fee,
             storageLimit: params.storageLimit,
             gasLimit: params.gasLimit || params.gas
