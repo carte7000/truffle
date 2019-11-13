@@ -20,6 +20,7 @@ const getNetworkTypeClass = ({
   networkType = "ethereum"
 }: InterfaceAdapterOptions) => {
   if (supportedEvmNetworks.includes(networkType)) return "evm-like";
+  if (networkType === "tezos") return "tezos";
   return networkType;
 };
 
@@ -28,6 +29,12 @@ export class InterfaceAdapter {
   constructor(options?: InterfaceAdapterOptions) {
     switch (getNetworkTypeClass(options)) {
       case "evm-like":
+        this.adapter = new Web3InterfaceAdapter({
+          provider: options.provider,
+          networkType: options.networkType
+        });
+        break;
+      case "tezos":
         this.adapter = new Web3InterfaceAdapter({
           provider: options.provider,
           networkType: options.networkType

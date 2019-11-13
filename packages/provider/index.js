@@ -1,6 +1,6 @@
 const debug = require("debug")("provider");
 const Web3 = require("web3");
-const { Web3Shim, InterfaceAdapter } = require("@truffle/interface-adapter");
+const { InterfaceAdapter } = require("@truffle/interface-adapter");
 const wrapper = require("./wrapper");
 const DEFAULT_NETWORK_CHECK_TIMEOUT = 5000;
 
@@ -44,7 +44,6 @@ module.exports = {
       networkCheckTimeout = DEFAULT_NETWORK_CHECK_TIMEOUT;
     }
     const provider = this.getProvider(options);
-    const web3 = new Web3Shim({ provider, networkType });
     const interfaceAdapter = new InterfaceAdapter({ provider, networkType });
     return new Promise((resolve, reject) => {
       const noResponseFromNetworkCall = setTimeout(() => {
@@ -56,20 +55,24 @@ module.exports = {
           "networks[networkName].networkCheckTimeout property to do this.";
         throw new Error(errorMessage);
       }, networkCheckTimeout);
-      web3.eth
-        .getBlockNumber()
-        .then(() => {
-          clearTimeout(noResponseFromNetworkCall);
-          resolve(true);
-        })
-        .catch(error => {
-          console.log(
-            "> Something went wrong while attempting to connect " +
-              "to the network. Check your network configuration."
-          );
-          clearTimeout(noResponseFromNetworkCall);
-          reject(error);
-        });
+      // Network ID has a side effect of setting Taquito provider
+      interfaceAdapter.getNetworkId().then(() => {
+        return interfaceAdapter
+          .getBlock()
+          .then(() => {
+            clearTimeout(noResponseFromNetworkCall);
+            resolve(true);
+          })
+          .catch(error => {
+            console.error(error);
+            console.log(
+              "> Something went wrong while attempting to connect " +
+                "to the network. Check your network configuration."
+            );
+            clearTimeout(noResponseFromNetworkCall);
+            reject(error);
+          });
+      });
     });
   }
 };

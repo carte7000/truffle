@@ -1,4 +1,4 @@
-const debug = require("debug")("deployer:deployment"); // eslint-disable-line no-unused-vars
+const _debug = require("debug")("deployer:deployment"); // eslint-disable-line no-unused-vars
 
 /**
  * @class  Deployment
@@ -76,7 +76,7 @@ class Deployment {
    * @param  {Object}    web3
    * @param  {Object}    interfaceAdapter
    */
-  async _startBlockPolling(web3, interfaceAdapter) {
+  async _startBlockPolling(web3, _interfaceAdapter) {
     const self = this;
     const startTime = new Date().getTime();
 
@@ -119,7 +119,7 @@ class Deployment {
    * @param  {Object} interfaceAdapter
    * @return {Promise}             Resolves after `blockToWait` blocks
    */
-  async _waitBlocks(blocksToWait, state, web3, interfaceAdapter) {
+  async _waitBlocks(blocksToWait, state, web3, _interfaceAdapter) {
     const self = this;
     let currentBlock = await web3.eth.getBlockNumber();
 
@@ -291,7 +291,7 @@ class Deployment {
 
       const isDeployed = contract.isDeployed();
       const newArgs = await Promise.all(args);
-      const currentBlock = await contract.interfaceAdapter.getBlock("latest");
+      const currentBlock = await contract.web3.eth.getBlock("latest");
 
       // Last arg can be an object that tells us not to overwrite.
       if (newArgs.length > 0) {
