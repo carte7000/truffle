@@ -35,7 +35,10 @@ const Test = {
       return path.resolve(testFile);
     });
 
-    const interfaceAdapter = new InterfaceAdapter();
+    const interfaceAdapter = new InterfaceAdapter({
+      provider: config.provider,
+      networkType: config.networks[config.network].type
+    });
 
     // `accounts` will be populated before each contract() invocation
     // and passed to it so tests don't have to call it themselves.
@@ -172,7 +175,7 @@ const Test = {
       all: config.compileAll === true,
       files: updated.concat(solidityTestFiles),
       resolver: testResolver,
-      quiet: config.quiet,
+      quiet: config.runnerOutputOnly || config.quiet,
       quietWrite: true
     });
 

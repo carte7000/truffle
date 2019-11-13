@@ -1,5 +1,5 @@
 import Web3 from "web3";
-import { Provider } from "web3/providers";
+import { Provider } from "@truffle/provider";
 import Config from "@truffle/config";
 import { TezosToolkit } from "@taquito/taquito";
 
@@ -67,6 +67,7 @@ export class Web3Shim extends Web3 {
   public networkType: NetworkType;
 
   constructor(options?: Web3ShimOptions) {
+    // @ts-ignore
     super();
 
     if (options) {
@@ -82,7 +83,7 @@ export class Web3Shim extends Web3 {
     initInterface(this, options);
   }
 
-  setNetworkType(networkType: NetworkType, options?: Web3ShimOptions) {
+  public setNetworkType(networkType: NetworkType, options?: Web3ShimOptions) {
     this.networkType = networkType;
     initInterface(this, options);
   }
