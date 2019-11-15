@@ -380,7 +380,7 @@ class TezosReporter {
       data.timestamp = block.timestamp;
 
       const balance = new web3Utils.BN(
-        await data.contract.web3.eth.getBalance(tx.source)
+        await data.contract.web3.tez.tz.getBalance(tx.source).toString()
       );
       const gasUsed = new web3Utils.BN(
         tx.metadata.operation_result.consumed_gas
