@@ -11,21 +11,26 @@ export const TezosDefinition = {
   }
 };
 
-const overrides = {
-  getId: (web3: Web3Shim) => {
+const setupProvider = async (web3: Web3Shim) => {
+  if (!web3.tez) {
     // here we define a tez namespace &
     // attach our Tezos provider to the Web3Shim
     web3.tez = Tezos;
-    const _oldGetId = web3.eth.net.getId;
+    // @ts-ignore (typings incomplete)
+    const currentHost = web3.currentProvider.host;
+    // web3 has some neat quirks
+    const parsedHost = currentHost.match(/(^https?:\/\/)(.*?)\:\d.*/)[2];
+    // sets the provider for subsequent Tezos provider calls
+    await web3.tez.setProvider({ rpc: parsedHost });
+  }
+};
 
+const overrides = {
+  getId: (web3: Web3Shim) => {
+    const _oldGetId = web3.eth.net.getId;
     // @ts-ignore
     web3.eth.net.getId = async () => {
-      // @ts-ignore (typings incomplete)
-      const currentHost = web3.currentProvider.host;
-      // web3 has some neat quirks
-      const parsedHost = currentHost.match(/(^https?:\/\/)(.*?)\:\d.*/)[2];
-      // sets the provider for subsequent Tezos provider calls
-      await web3.tez.setProvider({ rpc: parsedHost });
+      await setupProvider(web3);
       // @ts-ignore (typings incomplete)
       const { chain_id } = await web3.tez.rpc.getBlockHeader();
       return chain_id;
@@ -36,6 +41,7 @@ const overrides = {
     const _oldGetAccounts = web3.eth.getAccounts;
 
     web3.eth.getAccounts = async () => {
+      await setupProvider(web3);
       // here we import user's faucet account:
       // email, passphrase, mnemonic, & secret are all REQUIRED.
       // TODO: all logic to check if user is importing only a private secret key
@@ -59,6 +65,7 @@ const overrides = {
 
     // @ts-ignore
     web3.eth.getBlock = async (blockNumber = "head") => {
+      await setupProvider(web3);
       // translate ETH nomenclature to XTZ
       // @ts-ignore
       if (blockNumber === "latest") blockNumber = "head";
@@ -76,6 +83,7 @@ const overrides = {
     const _oldGetBlockNumber = web3.eth.getBlockNumber;
 
     web3.eth.getBlockNumber = async () => {
+      await setupProvider(web3);
       const { level } = await web3.tez.rpc.getBlockHeader();
       return level;
     };
@@ -86,6 +94,7 @@ const overrides = {
     // decided to namespace a specific tez getBalance method
     // @ts-ignore
     web3.tez.getBalance = async address => {
+      await setupProvider(web3);
       const balance = (await web3.tez.tz.getBalance(address)).toString();
       return balance;
     };

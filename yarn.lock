@@ -1114,7 +1114,7 @@
     pbkdf2 "^3.0.17"
     typedarray-to-buffer "^3.1.5"
 
-"@taquito/taquito@5.2.0-beta.1":
+"@taquito/taquito@^5.2.0-beta.1":
   version "5.2.0-beta.1"
   resolved "https://registry.yarnpkg.com/@taquito/taquito/-/taquito-5.2.0-beta.1.tgz#8e6c0a8f171532d48794fc66bb3c55b932b01ac4"
   integrity sha512-BHKxwSNvvzB918cZZZ15YdYbhNCd1I+ef/53tNSCz/itQgaAhjdIDytAmoycJr15iixJafEuG8BvG8KcHSUdug==

@@ -55,24 +55,21 @@ module.exports = {
           "networks[networkName].networkCheckTimeout property to do this.";
         throw new Error(errorMessage);
       }, networkCheckTimeout);
-      // Network ID has a side effect of setting Taquito provider
-      interfaceAdapter.getNetworkId().then(() => {
-        return interfaceAdapter
-          .getBlock()
-          .then(() => {
-            clearTimeout(noResponseFromNetworkCall);
-            resolve(true);
-          })
-          .catch(error => {
-            console.error(error);
-            console.log(
-              "> Something went wrong while attempting to connect " +
-                "to the network. Check your network configuration."
-            );
-            clearTimeout(noResponseFromNetworkCall);
-            reject(error);
-          });
-      });
+      interfaceAdapter
+        .getBlock()
+        .then(() => {
+          clearTimeout(noResponseFromNetworkCall);
+          resolve(true);
+        })
+        .catch(error => {
+          console.error(error);
+          console.log(
+            "> Something went wrong while attempting to connect " +
+              "to the network. Check your network configuration."
+          );
+          clearTimeout(noResponseFromNetworkCall);
+          reject(error);
+        });
     });
   }
 };
