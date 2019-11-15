@@ -90,10 +90,10 @@ const overrides = {
   },
 
   getBalance: (web3: Web3Shim) => {
-    // since this is used in the tez reporter,
-    // decided to namespace a specific tez getBalance method
+    const _oldGetBalance = web3.eth.getBalance;
+
     // @ts-ignore
-    web3.tez.getBalance = async address => {
+    web3.eth.getBalance = async address => {
       await setupProvider(web3);
       const balance = (await web3.tez.tz.getBalance(address)).toString();
       return balance;
